@@ -6,50 +6,32 @@ import java.util.Date
 import java.util.Properties
 
 val versionMajor = 0
-val versionMinor = 1
+val versionMinor = 2
 val versionPatch = 0
 
-fun getBuildNumber(): Int {
-  val df = SimpleDateFormat("yyyyMMdd")
-  val date = LocalDateTime.now()
-  val seconds =
-      (Duration.between(date.withSecond(0).withMinute(0).withHour(0), date).seconds / 86400) * 99.0
-  val twoDigitSuffix = seconds.toInt()
-
-  return Integer.parseInt(df.format(Date()) + String.format("%02d", twoDigitSuffix))
-}
+val appVersionCode = 2;
 
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
   alias(libs.plugins.androidApplication)
   alias(libs.plugins.kotlinAndroid)
-  id("io.sentry.android.gradle") version "3.13.0"
   id("kotlin-parcelize")
 }
 
-sentry {
-  includeSourceContext.set(true)
-
-  org.set("davwheat")
-  projectName.set("shannon-modem-tweaks")
-  authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
-}
-
 android {
-  namespace = "dev.davwheat.shannonmodemtweaks"
+  namespace = "com.kimjio.shannonmodemtweaks"
   compileSdk = 34
   buildToolsVersion = "34.0.0"
 
   defaultConfig {
-    applicationId = "dev.davwheat.shannonmodemtweaks"
-    testApplicationId = "com.trainsplit.trainsplit.test"
+    applicationId = "com.kimjio.shannonmodemtweaks"
+    testApplicationId = "com.kimjio.shannonmodemtweaks.test"
     minSdk = 31
     targetSdk = 34
-    versionCode = getBuildNumber()
+    versionCode = appVersionCode
     versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    vectorDrawables { useSupportLibrary = true }
   }
 
   signingConfigs {
@@ -66,28 +48,25 @@ android {
 
   buildTypes {
     release {
-      isMinifyEnabled = false
+      isMinifyEnabled = true
+      isShrinkResources = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
       signingConfig = signingConfigs.getByName("release")
       isDebuggable = false
-
-      manifestPlaceholders["sentryEnvironment"] = "production"
     }
 
     debug {
       signingConfig = signingConfigs.getByName("debug")
       isDebuggable = true
-
-      manifestPlaceholders["sentryEnvironment"] = "development"
     }
   }
 
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
   }
 
-  kotlinOptions { jvmTarget = "1.8" }
+  kotlinOptions { jvmTarget = "17" }
   buildFeatures { compose = true }
   composeOptions { kotlinCompilerExtensionVersion = "1.5.1" }
   packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
@@ -107,12 +86,16 @@ dependencies {
   implementation(libs.ui)
   implementation(libs.ui.graphics)
   implementation(libs.ui.tooling.preview)
+  implementation(libs.material)
   implementation(libs.material3)
   implementation(libs.timber)
-  implementation(libs.androidx.material.icons.extended)
   implementation(libs.androidx.navigation.compose)
+  implementation(libs.androidx.material.icons.extended)
+  implementation(libs.androidx.material3.adaptive.navigation.suite)
+  implementation(libs.androidx.material3.adaptive.navigation.suite.android)
+  implementation(libs.androidx.material3.window.size.klass.android)
   testImplementation(libs.junit)
-  testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+  testImplementation(libs.junit.jupiter)
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.espresso.core)
   androidTestImplementation(platform(libs.compose.bom))

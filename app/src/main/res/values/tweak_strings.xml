@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_tta_volte_support">Common TTA-VoLTE support</string>
+    <string name="common_tta_volte_support_desc">Common settings for using TTA-VoLTE</string>
+    <string name="sim_1_tta_volte_support">SIM 1 TTA-VoLTE support</string>
+    <string name="sim_2_tta_volte_support">SIM 2 TTA-VoLTE support</string>
+    <string name="skt_sim_1_tta_volte_support_desc">Enable SKT TTA-VoLTE support (SIM 1)</string>
+    <string name="skt_sim_2_tta_volte_support_desc">Enable SKT TTA-VoLTE support (SIM 2)</string>
+    <string name="kt_sim_1_tta_volte_support_desc">Enable KT TTA-VoLTE support (SIM 1)</string>
+    <string name="kt_sim_2_tta_volte_support_desc">Enable KT TTA-VoLTE support (SIM 2)</string>
+    <string name="lgu_sim_1_tta_volte_support_desc">Enable LGU TTA-VoLTE support (SIM 1)</string>
+    <string name="lgu_sim_2_tta_volte_support_desc">Enable LGU TTA-VoLTE support (SIM 2)</string>
+</resources>

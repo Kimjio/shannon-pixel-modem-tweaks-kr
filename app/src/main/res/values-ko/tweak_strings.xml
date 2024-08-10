@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_tta_volte_support">공통 TTA-VoLTE 지원</string>
+    <string name="common_tta_volte_support_desc">TTA-VoLTE를 사용하기 위한 공통 설정</string>
+    <string name="sim_1_tta_volte_support">SIM 1 TTA-VoLTE 지원</string>
+    <string name="sim_2_tta_volte_support">SIM 2 TTA-VoLTE 지원</string>
+    <string name="skt_sim_1_tta_volte_support_desc">SKT TTA-VoLTE 지원 활성화 (SIM 1)</string>
+    <string name="skt_sim_2_tta_volte_support_desc">SKT TTA-VoLTE 지원 활성화 (SIM 2)</string>
+    <string name="kt_sim_1_tta_volte_support_desc">KT TTA-VoLTE 지원 활성화 (SIM 1)</string>
+    <string name="kt_sim_2_tta_volte_support_desc">KT TTA-VoLTE 지원 활성화 (SIM 2)</string>
+    <string name="lgu_sim_1_tta_volte_support_desc">LGU TTA-VoLTE 지원 활성화 (SIM 1)</string>
+    <string name="lgu_sim_2_tta_volte_support_desc">LGU TTA-VoLTE 지원 활성화 (SIM 2)</string>
+</resources>

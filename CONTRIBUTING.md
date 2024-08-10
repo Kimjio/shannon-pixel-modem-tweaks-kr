@@ -8,7 +8,7 @@ You'll want Android Studio by JetBrains and Google installed on your device to b
 
 Tweaks are designed to be added using a consistent format and technique, while also being very extensible.
 
-All tweaks are found at [`app/sec/main/java/dev/davwheat/shannonmodemtweaks/tweaks`](./app/sec/main/java/dev/davwheat/shannonmodemtweaks/tweaks).
+All tweaks are found at [`app/src/main/java/com/kimjio/shannonmodemtweaks/tweaks`](./app/src/main/java/com/kimjio/shannonmodemtweaks/tweaks).
 
 ## Adding nvitem tweaks
 
@@ -21,11 +21,11 @@ The app's code includes an `NvItemTweak` class which handles the logic to actual
 First, we need to create a new class that extends the `NvItemTweak` class. This class offers abstract properties you should override to define the metadata and changes needed for your intended tweak. Let's call this `NrConfigMode`:
 
 ```kt
-package dev.davwheat.shannonmodemtweaks.tweaks.nvitems
+package com.kimjio.shannonmodemtweaks.tweaks.nvitems
 
 // Import our superclass
 import android.os.Parcelable
-import dev.davwheat.shannonmodemtweaks.tweaks.nvitems.NvItemTweak
+import com.kimjio.shannonmodemtweaks.tweaks.nvitems.NvItemTweak
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -37,10 +37,10 @@ class NrConfigMode: NvItemTweak(), Parcelable {
 Let's start by setting the name and description for our tweak. This will be shown on the Tweaks page in-app, and is important to disclose any important information about a tweak.
 
 ```kt
-package dev.davwheat.shannonmodemtweaks.tweaks.nvitems
+package com.kimjio.shannonmodemtweaks.tweaks.nvitems
 
 import android.os.Parcelable
-import dev.davwheat.shannonmodemtweaks.tweaks.nvitems.NvItemTweak
+import com.kimjio.shannonmodemtweaks.tweaks.nvitems.NvItemTweak
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -61,10 +61,10 @@ Next, you can add the actual nvitem IDs and values. For this, you'll need to ove
 This property accepts a list of `NvItem` class instances.
 
 ```kt
-package dev.davwheat.shannonmodemtweaks.tweaks.nvitems
+package com.kimjio.shannonmodemtweaks.tweaks.nvitems
 
 import android.os.Parcelable
-import dev.davwheat.shannonmodemtweaks.tweaks.nvitems.NvItemTweak
+import com.kimjio.shannonmodemtweaks.tweaks.nvitems.NvItemTweak
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -89,12 +89,12 @@ If your nvitem requires an index, an optional `index` parameter is also present 
 Additionally, if you need to quicky and easily convert to the little-endian byte-separated hex syntax, such as for setting supported SA bands, the app offers a [helpful extension function on integers called `toNvItemHexString()`](#tonvitemhexstringbytecount-int).
 
 ```kt
-package dev.davwheat.shannonmodemtweaks.tweaks.nvitems
+package com.kimjio.shannonmodemtweaks.tweaks.nvitems
 
 // Import the NvItem class
 import android.os.Parcelable
-import dev.davwheat.shannonmodemtweaks.tweaks.nvitems.NvItem
-import dev.davwheat.shannonmodemtweaks.tweaks.nvitems.NvItemTweak
+import com.kimjio.shannonmodemtweaks.tweaks.nvitems.NvItem
+import com.kimjio.shannonmodemtweaks.tweaks.nvitems.NvItemTweak
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -120,7 +120,7 @@ If you need to quicky and easily convert to the little-endian byte-separated hex
 
 You should pass an integer to this method to dictate the number of bytes to output in the resultant string.
 
-This is used in the [`AdditionalNrSaLocking`](./app/sec/main/java/dev/davwheat/shannonmodemtweaks/tweaks/nvitems/AdditionalNrSaLocking.kt) tweak [linked below](#all-nvitem-tweak-features).
+This is used in the [`AdditionalNrSaLocking`](https://github.com/davwheat/shannon-pixel-modem-tweaks-app/blob/main/app/src/main/java/dev/davwheat/shannonmodemtweaks/tweaks/nvitems/AdditionalNrSaLocking.kt) tweak [linked below](#all-nvitem-tweak-features).
 
 ```kt
 1.toNvItemHexString(3)        // "01,00,00"
@@ -131,4 +131,4 @@ This is used in the [`AdditionalNrSaLocking`](./app/sec/main/java/dev/davwheat/s
 
 ### All nvitem tweak features
 
-The best example of the available features is found in [AdditionalNrSaLocking.kt](./app/sec/main/java/dev/davwheat/shannonmodemtweaks/tweaks/nvitems/AdditionalNrSaLocking.kt).
+The best example of the available features is found in [AdditionalNrSaLocking.kt](https://github.com/davwheat/shannon-pixel-modem-tweaks-app/blob/main/app/src/main/java/dev/davwheat/shannonmodemtweaks/tweaks/nvitems/AdditionalNrSaLocking.kt).

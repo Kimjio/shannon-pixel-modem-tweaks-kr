@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Shannon 모뎀 트윅</string>
+    <string name="app_name_short">Shannon 트윅</string>
+    <string name="non_pixel_damage_warning">Pixel 기기를 사용하지 않으면 이 앱을 사용하지 마세요. 기기가 손상될 수 있습니다.</string>
+    <string name="reports_possible_pixel_device">%1$s(으)로 보이지만, 다른 요소로 인해 확실하지는 않습니다.</string>
+    <string name="reports_pixel_device"><b>%1$s</b>을(를) 사용 중 입니다.</string>
+    <string name="reports_unknown_device">Pixel 기기를 사용하지 않습니다. (또는 알 수 없는 모델을 사용하고 있습니다.)</string>
+    <string name="unknown_device_report">만약 Pixel 기기가 맞다면, 버그 보고를 해주세요.</string>
+    <string name="reports_not_a_pixel">Google Pixel 기기가 아닌 것 같습니다.</string>
+    <string name="root_access_success">성공! 루트 권한을 확인했습니다.</string>
+    <string name="root_access_fail">실패! 루트 권한을 확인하지 못했습니다.</string>
+    <string name="root_access_request">모뎀을 수정하기 위해 루트 권한이 필요합니다.</string>
+    <string name="root_access_request_cta">루트 권한 확인</string>
+    <string name="nav_info">정보</string>
+    <string name="nav_tweaks">트윅</string>
+    <string name="default_terminal_output">여기에 트윅 실행 결과가 출력됩니다.\n\n</string>
+    <string name="tweaks_disabled_main">Shannon 모뎀이 탑제된 Google Pixel 기기인지 확신할 수 없습니다.</string>
+    <string name="tweaks_disabled_supporting_1">해당 기능 및 설정은 Shannon 모뎀이 탑제된 Google Pixel에서만 작동합니다.</string>
+    <string name="tweaks_disabled_supporting_2">기기가 호환되는지 확인하기 전까지는 어떠한 트윅도 적용할 수 없습니다.</string>
+    <string name="nsg_running_warning">Network Signal Guru 가 실행 중으로 보입니다. 트윅 적용 전에 앱을 종료해야 합니다.</string>
+    <string name="nsg_check_refresh">다시 확인</string>
+    <string name="reset_nvitems_lead">트윅 적용 후 문제가 생겼나요?</string>
+    <string name="reset_nvitems_description">nvitems 초기화 시 적용된 트윅이 제거됩니다. eSIM, 네트워크 및 소프트웨어 설정은 유지됩니다.</string>
+    <string name="reset_nvitems_cta">nvitems 초기화</string>
+    <string name="reset_nvitems_dialog_confirm_cta">초기화</string>
+    <string name="reset_nvitems_dialog_dismiss_cta">@android:string/cancel</string>
+    <string name="reset_nvitems_dialog_title">nvitems 초기화</string>
+    <string name="reset_nvitems_dialog_lead">nvitems를 기본값으로 초기화 할까요?</string>
+    <string name="reset_nvitems_dialog_description">작업 완료 후 기기가 다시 시작됩니다</string>
+    <string name="reset_nvitems_resetting_dialog_title">nvitems 초기화 중</string>
+    <string name="reset_nvitems_resetting_dialog_lead">몇 분 정도 걸릴 수 있습니다</string>
+    <string name="reset_nvitems_resetting_dialog_description">작업 완료 후 기기가 다시 시작됩니다</string>
+    <string name="reset_nvitems_failed_dialog_confirm_cta">@android:string/ok</string>
+    <string name="reset_nvitems_failed_dialog_title">오류</string>
+    <string name="reset_nvitems_failed_dialog_lead">nvitems 초기화 실패</string>
+    <string name="reset_nvitems_failed_dialog_no_root">루트 권한이 없거나, 허용하지 않았습니다.</string>
+    <string name="reset_nvitems_failed_dialog_execution_error">nvitems 데이터베이스 이름을 바꾸는 동안 오류가 발생했습니다.</string>
+    <string name="loading_tweak_states_dialog">트윅 상태 로드 중… (%1$s/%2$s)</string>
+    <string name="loading_tweak_states_dialog_description">일부 항목은 최대 30초 정도 소요될 수 있습니다.</string>
+</resources>
