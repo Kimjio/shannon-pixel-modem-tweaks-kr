@@ -27,5 +27,6 @@ class KTVoLTESupportDS : NvItemTweak(), Parcelable {
                 NvItem(id = "DS.PSS.AIMS.Payload-AMRNB", index = 1, value = "64"),
                 NvItem(id = "DS.PSS.AIMS.Payload-DTMF", value = "66"),
                 NvItem(id = "DS.PSS.AIMS.Payload-DTMF.WB", value = "63"),
+                NvItem(id = "DS.PSS.AIMS.Audio.Media.RR", value = "20,03,00,00"),
             )
 }

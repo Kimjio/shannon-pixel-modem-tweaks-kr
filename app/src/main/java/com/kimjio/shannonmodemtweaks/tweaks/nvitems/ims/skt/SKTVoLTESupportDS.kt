@@ -8,7 +8,7 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class SKTVoLTESupportDS  : NvItemTweak(), Parcelable {
+class SKTVoLTESupportDS : NvItemTweak(), Parcelable {
     @IgnoredOnParcel
     override val name = "SKT TTA-VoLTE support (SIM2)"
 
@@ -27,5 +27,6 @@ class SKTVoLTESupportDS  : NvItemTweak(), Parcelable {
                 NvItem(id = "DS.PSS.AIMS.Payload-AMRNB", index = 1, value = "FF"),
                 NvItem(id = "DS.PSS.AIMS.Payload-DTMF", value = "65"),
                 NvItem(id = "DS.PSS.AIMS.Payload-DTMF.WB", value = "67"),
+                NvItem(id = "DS.PSS.AIMS.Audio.Media.RR", value = "20,03,00,00"),
             )
 }

@@ -17,17 +17,20 @@ import com.kimjio.shannonmodemtweaks.utils.InferDevice
 
 @Composable
 fun MainScreen() {
-  var rootCheckState by rememberSaveable { mutableStateOf(RootCheckState.PENDING) }
+    var rootCheckState by rememberSaveable { mutableStateOf(RootCheckState.PENDING) }
 
-  val (device, certainty) = InferDevice.getDevice()
+    val (device, certainty) = InferDevice.getDevice()
 
-  Column(
-      modifier = Modifier.padding(16.dp).verticalScroll(rememberScrollState()).fillMaxSize(),
-      verticalArrangement = Arrangement.spacedBy(16.dp),
-  ) {
-    DeviceInfo(device = device, certainty = certainty)
-    IsNsgRunningCheck()
-    CheckRootAccess(rootCheckState = rootCheckState) { rootCheckState = it }
-    ResetNvItems()
-  }
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        DeviceInfo(device = device, certainty = certainty)
+        IsNsgRunningCheck()
+        CheckRootAccess(rootCheckState = rootCheckState) { rootCheckState = it }
+        ResetNvItems()
+    }
 }

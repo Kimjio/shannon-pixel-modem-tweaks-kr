@@ -1,12 +1,12 @@
 package com.kimjio.shannonmodemtweaks.composables
 
 import android.app.Activity
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -37,13 +38,12 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,33 +59,38 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kimjio.shannonmodemtweaks.R
-import com.kimjio.shannonmodemtweaks.saveable.snapshotStateMapSaver
 import com.kimjio.shannonmodemtweaks.tweaks.AllTweaks
 import com.kimjio.shannonmodemtweaks.tweaks.Tweak
 import com.kimjio.shannonmodemtweaks.ui.theme.ShannonModemTweaksTheme
 import com.kimjio.shannonmodemtweaks.utils.InferDevice
+import com.kimjio.shannonmodemtweaks.viewModels.TweaksViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.math.min
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalMaterial3WindowSizeClassApi::class
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3WindowSizeClassApi::class,
 )
 @Composable
-fun TweaksList() {
+fun TweaksList(
+    tweaksViewModel: TweaksViewModel = viewModel()
+) {
     val defaultTerminalText = stringResource(R.string.default_terminal_output)
 
     val listState = rememberLazyListState()
     var outputText by rememberSaveable { mutableStateOf(defaultTerminalText) }
     val allowTweaks = InferDevice.shouldAllowTweaks()
     var isLoadingTweaksState by rememberSaveable { mutableStateOf(allowTweaks) }
+    var isLoadingTweaksStateStart by rememberSaveable { mutableStateOf(false) }
     var isReloadingTweaksState by rememberSaveable { mutableStateOf(false) }
     var tweakStateLoadingProgress by rememberSaveable { mutableIntStateOf(0) }
-    val tweaksState =
-        rememberSaveable(saver = snapshotStateMapSaver()) { mutableStateMapOf<Tweak, Boolean?>() }
+    var tweakStateLoadingSubProgress by rememberSaveable { mutableFloatStateOf(0f) }
+    val tweaksState = tweaksViewModel.tweaksState;
 
     val pullToRefreshState = rememberPullToRefreshState()
 
@@ -109,21 +114,35 @@ fun TweaksList() {
     }
 
     LaunchedEffect(isLoadingTweaksState) {
-        if (!isLoadingTweaksState) return@LaunchedEffect
+        if (!isLoadingTweaksState || isLoadingTweaksStateStart) return@LaunchedEffect
 
-        tweakStateLoadingProgress = 0;
-        tweaksState.putAll(withContext(Dispatchers.IO) {
+        isLoadingTweaksStateStart = true
+        tweakStateLoadingProgress = 0
+        tweakStateLoadingSubProgress = 0f
+
+        withContext(Dispatchers.IO) {
             val t = allTweaks.flatMap { it.value }
 
-            mapOf(*t.map { tweak ->
+            val pairList = t.map { tweak ->
                 Thread.sleep(50L)
-                tweakStateLoadingProgress += 1
-                Pair(tweak, tweak.isTweakEnabled(isReloadingTweaksState))
-            }.toTypedArray())
-        })
+                Pair(tweak, tweak.isTweakEnabled(isReloadingTweaksState) { current, total ->
+                    tweakStateLoadingSubProgress = current.toFloat() / total.toFloat()
 
-        isLoadingTweaksState = false
-        isReloadingTweaksState = false;
+                    if (tweakStateLoadingSubProgress == 1f) {
+                        tweakStateLoadingSubProgress = 0f
+                        tweakStateLoadingProgress++;
+                    }
+
+                    if (tweakStateLoadingProgress == tweaksCount) {
+                        isLoadingTweaksState = false
+                        isReloadingTweaksState = false
+                        isLoadingTweaksStateStart = false
+                    }
+                })
+            }
+
+            tweaksViewModel.tweaksState.putAll(pairList)
+        }
     }
 
     LaunchedEffect(outputText) {
@@ -132,6 +151,12 @@ fun TweaksList() {
             outputHorizontalScrollState.animateScrollTo(0)
         }
     }
+
+    val animatedProgress by animateFloatAsState(
+        label = "FloatAnimation",
+        targetValue = (tweakStateLoadingSubProgress + tweakStateLoadingProgress.toFloat()) / tweaksCount,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+    )
 
     if (isLoadingTweaksState) {
         Dialog(onDismissRequest = {}) {
@@ -144,7 +169,7 @@ fun TweaksList() {
                     Text(
                         stringResource(
                             R.string.loading_tweak_states_dialog,
-                            tweakStateLoadingProgress,
+                            min(tweakStateLoadingProgress + 1, tweaksCount),
                             tweaksCount,
                         ),
                         style = MaterialTheme.typography.bodyLarge,
@@ -156,7 +181,7 @@ fun TweaksList() {
                         modifier = Modifier.padding(bottom = 16.dp),
                     )
                     LinearProgressIndicator(
-                        progress = { tweakStateLoadingProgress.toFloat() / tweaksCount },
+                        progress = { animatedProgress },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
@@ -181,9 +206,17 @@ fun TweaksList() {
                     onOutput = ::appendToOutput,
                     isRefreshing = isReloadingTweaksState,
                     pullToRefreshState = pullToRefreshState,
+                    onTweakApplied = { it, fn ->
+                        scope.launch {
+                            val map = tweaksState.toMutableMap()
+                            map[it] = withContext(Dispatchers.IO) { it.isTweakEnabled() }
+                            tweaksViewModel.tweaksState.putAll(map)
+                            fn()
+                        }
+                    },
                     onRefresh = {
                         isLoadingTweaksState = true
-                        isReloadingTweaksState = true;
+                        isReloadingTweaksState = true
                     },
                 )
 
@@ -212,9 +245,17 @@ fun TweaksList() {
                     onOutput = ::appendToOutput,
                     isRefreshing = isReloadingTweaksState,
                     pullToRefreshState = pullToRefreshState,
+                    onTweakApplied = { it, fn ->
+                        scope.launch {
+                            val map = tweaksState.toMutableMap()
+                            map[it] = withContext(Dispatchers.IO) { it.isTweakEnabled() }
+                            tweaksViewModel.tweaksState.putAll(map)
+                            fn()
+                        }
+                    },
                     onRefresh = {
                         isLoadingTweaksState = true
-                        isReloadingTweaksState = true;
+                        isReloadingTweaksState = true
                     },
                 )
 
@@ -237,7 +278,8 @@ fun TweaksColumn(
     allowTweaks: Boolean,
     allTweaks: Set<Map.Entry<String, List<Tweak>>>,
     scope: CoroutineScope,
-    tweaksState: SnapshotStateMap<Tweak, Boolean?>,
+    tweaksState: Map<Tweak, Boolean?>,
+    onTweakApplied: (Tweak, () -> Unit) -> Unit,
     onOutput: (String) -> Unit,
     pullToRefreshState: PullToRefreshState,
     isRefreshing: Boolean,
@@ -293,12 +335,10 @@ fun TweaksColumn(
                         TweaksListItem(tweak = it,
                             enabled = allowTweaks,
                             onOutput = onOutput,
+                            scope = scope,
                             isTweakApplied = tweaksState[it],
-                            onTweakApplied = {
-                                scope.launch {
-                                    tweaksState[it] =
-                                        withContext(Dispatchers.IO) { it.isTweakEnabled() }
-                                }
+                            onTweakApplied = { fn ->
+                                onTweakApplied(it, fn)
                             })
                     }
                 }
@@ -306,7 +346,6 @@ fun TweaksColumn(
         )
     }
 }
-
 
 @Composable
 fun ConsoleOutput(
@@ -356,9 +395,10 @@ fun TweaksListItem(
     modifier: Modifier = Modifier,
     tweak: Tweak,
     enabled: Boolean,
+    scope: CoroutineScope,
     onOutput: (String) -> Unit,
     isTweakApplied: Boolean?,
-    onTweakApplied: () -> Unit,
+    onTweakApplied: (() -> Unit) -> Unit,
 ) {
     var isEnabling by rememberSaveable { mutableStateOf(false) }
 
@@ -367,14 +407,24 @@ fun TweaksListItem(
 
         isEnabling = true
 
-        val (success, output) = tweak.applyTweak()
+        scope.launch {
+            withContext(Dispatchers.IO) {
+                val (success, output) = tweak.applyTweak()
 
-        isEnabling = false
-
-        onOutput(
-            "${if (success) "Success" else "Failure"} - ${tweak.name}:\n\n${output}\n${"-".repeat(32)}",
-        )
-        onTweakApplied()
+                withContext(Dispatchers.Main) {
+                    onOutput(
+                        "${if (success) "Success" else "Failure"} - ${tweak.name}:\n\n${output}\n${
+                            "-".repeat(
+                                32
+                            )
+                        }",
+                    )
+                    onTweakApplied {
+                        isEnabling = false
+                    }
+                }
+            }
+        }
     }
 
     Timber.d(tweak.name)
@@ -382,7 +432,9 @@ fun TweaksListItem(
     Timber.d("isTweakApplied: $isTweakApplied")
     Timber.d("-----------")
 
-    Surface(modifier = Modifier.clickable { enableTweak() }) {
+    Surface(modifier = Modifier.clickable(
+        enabled = !isEnabling && (isTweakApplied == false && !tweak.canBeDisabled) && enabled
+    ) { enableTweak() }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier.padding(vertical = 12.dp, horizontal = 16.dp),
@@ -405,7 +457,7 @@ fun TweaksListItem(
 
             Switch(
                 checked = isTweakApplied == true || isEnabling,
-                enabled = (isTweakApplied == false && !tweak.canBeDisabled) && enabled,
+                enabled = !isEnabling && (isTweakApplied == false && !tweak.canBeDisabled) && enabled,
                 onCheckedChange = { enableTweak() },
             )
         }

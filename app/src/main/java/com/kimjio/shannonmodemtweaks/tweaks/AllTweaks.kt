@@ -1,6 +1,7 @@
 package com.kimjio.shannonmodemtweaks.tweaks
 
 import com.kimjio.shannonmodemtweaks.tweaks.nvitems.ims.CommonTTAVoLTESupport
+import com.kimjio.shannonmodemtweaks.tweaks.nvitems.ims.CommonTTAVoLTESupportDS
 import com.kimjio.shannonmodemtweaks.tweaks.nvitems.ims.kt.KTVoLTESupport
 import com.kimjio.shannonmodemtweaks.tweaks.nvitems.ims.kt.KTVoLTESupportDS
 import com.kimjio.shannonmodemtweaks.tweaks.nvitems.ims.lgu.LGUVoLTESupport
@@ -14,6 +15,7 @@ val AllTweaks: Map<String, List<Tweak>> =
             "IMS",
             listOf(
                 CommonTTAVoLTESupport(),
+                CommonTTAVoLTESupportDS(),
             )
                 .sortedBy { it.name },
         ),

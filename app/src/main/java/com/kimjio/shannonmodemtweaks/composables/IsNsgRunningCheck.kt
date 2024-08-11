@@ -45,28 +45,28 @@ fun IsNsgRunningCheck(
     modifier: Modifier = Modifier,
 ) {
 
-  var isNsgRunning by rememberSaveable { mutableStateOf<Boolean?>(null) }
-  var isNsgRunningRefreshing by rememberSaveable { mutableStateOf(false) }
+    var isNsgRunning by rememberSaveable { mutableStateOf<Boolean?>(null) }
+    var isNsgRunningRefreshing by rememberSaveable { mutableStateOf(false) }
 
-  fun refreshNsgStatus() {
-    isNsgRunningRefreshing = true
-    CoroutineScope(Dispatchers.IO).launch {
-      val running = IsNsgRunning.isNsgRunning()
+    fun refreshNsgStatus() {
+        isNsgRunningRefreshing = true
+        CoroutineScope(Dispatchers.IO).launch {
+            val running = IsNsgRunning.isNsgRunning()
 
-      withContext(Dispatchers.Main) {
-        isNsgRunning = running
-        isNsgRunningRefreshing = false
-      }
+            withContext(Dispatchers.Main) {
+                isNsgRunning = running
+                isNsgRunningRefreshing = false
+            }
+        }
     }
-  }
 
-  LaunchedEffect(true) { if (isNsgRunning == null) refreshNsgStatus() }
+    LaunchedEffect(true) { if (isNsgRunning == null) refreshNsgStatus() }
 
-  AnimatedContent(targetState = isNsgRunning, label = "NSG running check content") {
-    if (it == true) {
-      IsNsgRunningCheckResult(modifier, isNsgRunningRefreshing) { refreshNsgStatus() }
+    AnimatedContent(targetState = isNsgRunning, label = "NSG running check content") {
+        if (it == true) {
+            IsNsgRunningCheckResult(modifier, isNsgRunningRefreshing) { refreshNsgStatus() }
+        }
     }
-  }
 }
 
 @Composable
@@ -75,60 +75,62 @@ private fun IsNsgRunningCheckResult(
     isRefreshing: Boolean,
     onRecheck: () -> Unit
 ) {
-  Surface(
-      modifier = modifier.clip(RoundedCornerShape(8.dp)).fillMaxWidth(),
-      color = MaterialTheme.colorScheme.errorContainer,
-      contentColor = MaterialTheme.colorScheme.onErrorContainer,
-      tonalElevation = 2.dp,
-      shadowElevation = 2.dp,
-  ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Surface(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .fillMaxWidth(),
+        color = MaterialTheme.colorScheme.errorContainer,
+        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        tonalElevation = 2.dp,
+        shadowElevation = 2.dp,
     ) {
-      Text(
-          stringResource(R.string.nsg_running_warning),
-          textAlign = TextAlign.Center,
-          fontWeight = FontWeight.Bold,
-      )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                stringResource(R.string.nsg_running_warning),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+            )
 
-      Button(
-          enabled = !isRefreshing,
-          onClick = { onRecheck() },
-          colors =
-              ButtonDefaults.buttonColors(
-                  containerColor = MaterialTheme.colorScheme.error,
-                  contentColor = MaterialTheme.colorScheme.onError,
-              ),
-      ) {
-        if (isRefreshing) {
-          CircularProgressIndicator(
-              modifier = Modifier.size(ButtonDefaults.IconSize),
-              strokeWidth = 2.dp,
-              color = LocalContentColor.current,
-          )
-        } else {
-          Icon(
-              Icons.Rounded.Refresh,
-              contentDescription = null,
-              modifier = Modifier.size(ButtonDefaults.IconSize),
-          )
+            Button(
+                enabled = !isRefreshing,
+                onClick = { onRecheck() },
+                colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                ),
+            ) {
+                if (isRefreshing) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
+                        strokeWidth = 2.dp,
+                        color = LocalContentColor.current,
+                    )
+                } else {
+                    Icon(
+                        Icons.Rounded.Refresh,
+                        contentDescription = null,
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
+                    )
+                }
+                Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+                Text(stringResource(R.string.nsg_check_refresh))
+            }
         }
-        Spacer(Modifier.width(ButtonDefaults.IconSpacing))
-        Text(stringResource(R.string.nsg_check_refresh))
-      }
     }
-  }
 }
 
 @Preview
 @Composable
 private fun IsNsgRunningPreview() {
-  Column(
-      verticalArrangement = Arrangement.spacedBy(8.dp),
-  ) {
-    IsNsgRunningCheckResult(isRefreshing = true) {}
-    IsNsgRunningCheckResult(isRefreshing = false) {}
-  }
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        IsNsgRunningCheckResult(isRefreshing = true) {}
+        IsNsgRunningCheckResult(isRefreshing = false) {}
+    }
 }

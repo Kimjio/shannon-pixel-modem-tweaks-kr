@@ -7,9 +7,9 @@ import java.util.Properties
 
 val versionMajor = 0
 val versionMinor = 2
-val versionPatch = 0
+val versionPatch = 1
 
-val appVersionCode = 2;
+val appVersionCode = 3;
 
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
